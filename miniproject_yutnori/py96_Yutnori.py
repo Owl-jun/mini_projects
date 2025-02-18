@@ -537,7 +537,7 @@ class YutnoriGame:
             if self.branch_selection:
                 text = font.render("어디로 움직일까요?", True, WHITE)
             else:
-                text = font.render("내보낼 말을 선택하세요", True, WHITE)
+                text = font.render("움직일 말을 선택하세요", True, WHITE)
             self.screen.blit(text, (SCREEN_WIDTH//2 - 150, 300))
         if self.branch_selection:
             for option in self.branch_options:
