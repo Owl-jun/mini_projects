@@ -40,7 +40,7 @@ def load_image(filename, colorkey=None):
 class Game:
     def __init__(self):
         self.started = False
-        self.player_turn = True
+        self.current_player = 0  # 0: 플레이어, 1: AI
         self.shaking = False
         self.selecting_pawn = False
         self.selected_pawn = None
@@ -53,9 +53,46 @@ class Game:
         self.extra_turn = False  # 게임 시작 시 초기화
 
     def toggle_turn(self):
-        if not self.extra_turn:  # 🔥 추가 턴이 없을 때만 턴을 바꿈
-            self.player_turn = not self.player_turn
-        self.extra_turn = False  # 🔥 턴을 넘길 때 추가 턴 초기화
+        if not self.extra_turn:
+            self.current_player = 1 - self.current_player
+        self.extra_turn = False
+
+# -------------------------------
+# AI 관련 클래스
+# -------------------------------
+class AI:
+    def __init__(self, pawn, yut, game_state, board):
+        self.pawn = pawn
+        self.yut = yut
+        self.game_state = game_state
+        self.board = board
+
+    def take_turn(self):
+        # 1. 윷 던지기
+        self.yut.show_result()
+        pygame.time.delay(500)
+
+        # 2. 말 선택 로직 (가장 단순한 버전)
+        movable_pawns = [i for i, pos in enumerate(self.pawn.c_positions) if pos != -2]
+        if not movable_pawns:
+            return
+
+        # 예시: 상대 말을 잡을 수 있는 말 선택 → 없으면 랜덤
+        best_pawn = self.select_best_pawn(movable_pawns)
+        self.pawn.move_pawn(best_pawn, self.yut.result_text, is_player=False)
+        pygame.time.delay(500)
+
+        # 3. 턴 넘기기
+        if not self.game_state.extra_turn:
+            self.game_state.toggle_turn()
+
+    def select_best_pawn(self, movable_pawns):
+        # 잡을 수 있는 말 우선 선택
+        for idx in movable_pawns:
+            target_pos = self.board.calculate_main_move(self.pawn.c_positions[idx], {'도!':1,'개!':2,'걸!':3,'윷!':4,'모!':5}[self.yut.result_text])
+            if target_pos in self.pawn.p_positions:
+                return idx
+        return random.choice(movable_pawns)
 
 
 # -------------------------------
@@ -243,8 +280,9 @@ class PlayerUI:
 # 말(Pawn) 클래스
 # -------------------------------
 class Pawn:
-    def __init__(self, board):
+    def __init__(self, board, game_state):
         self.board = board
+        self.game_state = game_state
         self.p_positions = [-1] * 5  # -1: 대기중, -2: 도착
         self.c_positions = [-1] * 5
         self.pawn_images = {
@@ -335,14 +373,14 @@ class Pawn:
                 else:
                     new_pos = self.board.calculate_main_move(base, move_steps)
 
-            # 🔥 같은 위치의 말들도 함께 이동하도록 적용
+            # 같은 위치의 말들도 함께 이동하도록 적용
             grouped_pawns = self.get_grouped_pawns(start_pos, is_player)
             for i in grouped_pawns:
                 positions[i] = new_pos
 
-        print(f'말{grouped_pawns} 이동: {start_pos} → {new_pos} ({result})')
+            print(f'말{grouped_pawns} 이동: {start_pos} → {new_pos} ({result})')
 
-        # 🔥 상대 팀 말이 있는지 확인 (잡기 기능)
+        # 상대 팀 말이 있는지 확인 (잡기 기능)
         if new_pos in opponent_positions:
             caught_indices = [i for i, pos in enumerate(opponent_positions) if pos == new_pos]
 
@@ -438,10 +476,11 @@ class YutnoriGame:
         self.game_state = Game()
         self.board = Board()
         self.ui = PlayerUI()
-        self.pawn = Pawn(self.board)
+        self.pawn = Pawn(self.board,self.game_state)
         self.yut = Yut()
         self.setup_buttons()
         self.holding_throw = False
+        self.ai = AI(self.pawn, self.yut, self.game_state, self.board)
 
         # 분기 선택 상태 관련 변수
         self.branch_selection = False         # 분기 선택 UI 활성화 여부
@@ -474,15 +513,15 @@ class YutnoriGame:
                         self.holding_throw = False
                         self.yut.show_result()
                         
-                        # 🔥 윷! 또는 모!가 나오면 추가 턴 부여
+                        #  윷! 또는 모!가 나오면 추가 턴 부여
                         if self.yut.result_text in ['윷!', '모!']:
                             self.game_state.extra_turn = True  
                         else:
-                            self.game_state.extra_turn = False  # 🔥 다른 결과면 추가 턴 X
+                            self.game_state.extra_turn = False  #  다른 결과면 추가 턴 X
                         
                         self.game_state.selecting_pawn = True  # 말 선택 시작
 
-                # 🔥 분기 선택 처리
+                #  분기 선택 처리
                 if self.branch_selection and event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = event.pos
                     for option in self.branch_options:
@@ -492,13 +531,13 @@ class YutnoriGame:
                             self.branch_selection = False
                             self.branch_options = []
 
-                            # 🔥 분기 선택 후 추가 던지기가 없으면 턴 넘기기
+                            # 분기 선택 후 추가 던지기가 없으면 턴 넘기기
                             if not self.game_state.extra_turn:
                                 self.game_state.toggle_turn()
                             self.game_state.selecting_pawn = False
                             break
 
-                # 🔥 일반 말 이동 처리
+                # 일반 말 이동 처리
                 if self.game_state.selecting_pawn and not self.branch_selection and event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = event.pos
                     for idx, pos in enumerate(self.pawn.p_positions):
@@ -512,7 +551,7 @@ class YutnoriGame:
                         if pawn_rect.collidepoint(mouse_x, mouse_y):
                             new_pos = self.pawn.move_pawn(idx, self.yut.result_text, is_player=True)
 
-                            # 🔥 이동 후 분기점이면 선택하도록 설정 (하지만 추가 턴은 안 줌)
+                            # 이동 후 분기점이면 선택하도록 설정 (하지만 추가 턴은 안 줌)
                             if new_pos in self.board.special_steps:
                                 self.branch_selection = True
                                 self.branch_options = self.board.special_steps[new_pos]
@@ -528,6 +567,8 @@ class YutnoriGame:
 
 
     def update(self):
+        if self.game_state.current_player == 1 and not self.game_state.selecting_pawn:
+            self.ai.take_turn()
         if self.holding_throw:
             self.yut.shake()
         self.blink_counter = (self.blink_counter + 1) % 30
