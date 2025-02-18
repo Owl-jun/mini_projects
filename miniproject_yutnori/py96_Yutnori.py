@@ -44,18 +44,19 @@ class Game:
         self.shaking = False
         self.selecting_pawn = False
         self.selected_pawn = None
+        self.extra_turn = False  # 🔥 윷! 또는 모!가 나왔을 때 한 번 더 던지기 위한 플래그
 
     def start(self):
         self.started = True
         self.shaking = False
         self.selecting_pawn = False
+        self.extra_turn = False  # 게임 시작 시 초기화
 
     def toggle_turn(self):
-        self.player_turn = not self.player_turn
+        if not self.extra_turn:  # 🔥 추가 턴이 없을 때만 턴을 바꿈
+            self.player_turn = not self.player_turn
+        self.extra_turn = False  # 🔥 턴을 넘길 때 추가 턴 초기화
 
-    def reset_pawn_selection(self):
-        self.selecting_pawn = False
-        self.selected_pawn = None
 
 # -------------------------------
 # 버튼 클래스
@@ -134,6 +135,8 @@ class Board:
             11: {11: 12, 12: 13, 13: 14, 14: 15},
             20: {20: 21, 21: 22, 22: 24, 24: 25, 25: 15},  
             26: {26: 27, 27: 23, 23: 28, 28: 29, 29: 30},  
+            24: {24: 25, 25: 15, 15: 16, 16: 17},
+            28: {28: 29, 29: 30, 30: -2}
         }
     
     def create_steps(self):
@@ -310,48 +313,48 @@ class Pawn:
         move_steps = move_dict.get(result, 0)
 
         positions = self.p_positions if is_player else self.c_positions
+        opponent_positions = self.c_positions if is_player else self.p_positions  # 상대방 위치
 
         start_pos = positions[idx]
 
+        # 출발 대기 상태에서 움직일 경우
         if start_pos == -1:
             new_pos = 0
             positions[idx] = new_pos + move_steps
-            return new_pos
-
-        # 🔥 함께 이동할 말 찾기
-        grouped_pawns = self.get_grouped_pawns(start_pos, is_player)
-
-        # 🔥 백도 예외 처리 (출발 전에도 적용)
-        if move_steps == -1:
-            if start_pos == -1:
-                new_pos = -1  # 출발 전이라면 그대로 유지
-            else:
-                new_pos = self.board.calculate_main_move(start_pos, -1)
-            
-            for i in grouped_pawns:  # 🔥 함께 이동하는 모든 말을 적용
-                positions[i] = new_pos
-            print(f'말{grouped_pawns} 이동: {start_pos} → {new_pos} (백도!)')
-            return new_pos
-
-        # 🔥 분기 선택이 되어 있는 경우 해당 branch_routes로 이동
-        if self.branch_choices[idx] is not None:
-            base = self.branch_choices[idx]
-            effective_steps = move_steps - 1 if move_steps > 0 else move_steps
-            new_pos = self.board.calculate_branch_move(base, effective_steps)
-            self.branch_choices[idx] = None  # 분기 선택 후 초기화
         else:
-            base = 0 if start_pos == -1 else start_pos
-            if base in self.board.branch_routes:
-                new_pos = self.board.calculate_branch_move(base, move_steps)
+            # 🔥 분기 선택이 되어 있다면 해당 분기 루트를 따라감
+            if self.branch_choices[idx] is not None:
+                base = self.branch_choices[idx]
+                effective_steps = move_steps - 1 if move_steps > 0 else move_steps
+                new_pos = self.board.calculate_branch_move(base, effective_steps)
+                self.branch_choices[idx] = None
             else:
-                new_pos = self.board.calculate_main_move(base, move_steps)
+                base = 0 if start_pos == -1 else start_pos
+                if base in self.board.branch_routes:
+                    new_pos = self.board.calculate_branch_move(base, move_steps)
+                else:
+                    new_pos = self.board.calculate_main_move(base, move_steps)
 
-        # 🔥 같은 위치의 말들도 함께 이동하도록 적용
-        for i in grouped_pawns:
-            positions[i] = new_pos
+            # 🔥 같은 위치의 말들도 함께 이동하도록 적용
+            grouped_pawns = self.get_grouped_pawns(start_pos, is_player)
+            for i in grouped_pawns:
+                positions[i] = new_pos
 
         print(f'말{grouped_pawns} 이동: {start_pos} → {new_pos} ({result})')
+
+        # 🔥 상대 팀 말이 있는지 확인 (잡기 기능)
+        if new_pos in opponent_positions:
+            caught_indices = [i for i, pos in enumerate(opponent_positions) if pos == new_pos]
+
+            # 상대 팀 말을 대기 상태(-1)로 되돌림
+            for i in caught_indices:
+                opponent_positions[i] = -1
+
+            print(f'🔥 상대팀 말 {caught_indices}를 잡았습니다! 추가 턴 획득!')
+            self.game_state.extra_turn = True  # 🔥 추가 턴 부여
+
         return new_pos
+
 
 
 
@@ -459,60 +462,69 @@ class YutnoriGame:
                 pygame.quit()
                 sys.exit()
 
-            # 게임 시작 전: 시작 버튼 처리
             if not self.game_state.started:
                 self.start_button.handle_event(event)
             else:
                 self.throw_button.handle_event(event)
+
                 if not self.game_state.selecting_pawn:
-                    # 윷 던지기 버튼 클릭 이벤트 처리
                     if event.type == pygame.MOUSEBUTTONDOWN and self.throw_button.rect.collidepoint(event.pos):
                         self.holding_throw = True
                     elif event.type == pygame.MOUSEBUTTONUP and self.throw_button.rect.collidepoint(event.pos):
                         self.holding_throw = False
                         self.yut.show_result()
-                        self.game_state.selecting_pawn = True
+                        
+                        # 🔥 윷! 또는 모!가 나오면 추가 턴 부여
+                        if self.yut.result_text in ['윷!', '모!']:
+                            self.game_state.extra_turn = True  
+                        else:
+                            self.game_state.extra_turn = False  # 🔥 다른 결과면 추가 턴 X
+                        
+                        self.game_state.selecting_pawn = True  # 말 선택 시작
 
-
-                # 분기 선택 UI가 활성화되어 있으면 우선 분기 옵션 클릭 처리
+                # 🔥 분기 선택 처리
                 if self.branch_selection and event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = event.pos
                     for option in self.branch_options:
                         branch_rect = self.board.steps[option]
                         if branch_rect.collidepoint(mouse_x, mouse_y):
-                            # 옵션을 클릭하면 pawn의 위치는 그대로 유지하고, 
-                            # branch_choices에 선택한 분기 시작점(예: option)을 기록만 함.
                             self.pawn.branch_choices[self.branch_pawn_index] = option
-                            print(f"분기 선택: 말[{self.branch_pawn_index}]가 {option} 방향을 선택 (다음 이동에 적용)")
                             self.branch_selection = False
                             self.branch_options = []
+
+                            # 🔥 분기 선택 후 추가 던지기가 없으면 턴 넘기기
+                            if not self.game_state.extra_turn:
+                                self.game_state.toggle_turn()
                             self.game_state.selecting_pawn = False
-                            # 분기 선택 후에도 pawn 이동은 다음 윷 결과 시 진행되므로 selecting_pawn 상태는 유지
                             break
 
-
-                # 일반 말 선택 처리 (분기 UI가 활성화되어 있지 않을 때)
+                # 🔥 일반 말 이동 처리
                 if self.game_state.selecting_pawn and not self.branch_selection and event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_x, mouse_y = event.pos
                     for idx, pos in enumerate(self.pawn.p_positions):
                         if pos == -2:
-                            continue  # 도착한 말은 제외
-                        # 필드에 있는 말
+                            continue
                         if pos == -1:
                             pawn_rect = pygame.Rect(100, 150 + idx * 60, 40, 40)
                         else:
                             pawn_rect = self.board.steps[pos]
+
                         if pawn_rect.collidepoint(mouse_x, mouse_y):
                             new_pos = self.pawn.move_pawn(idx, self.yut.result_text, is_player=True)
-                            # 만약 이동 후 special_steps에 도달하면 분기 선택 UI 활성화
+
+                            # 🔥 이동 후 분기점이면 선택하도록 설정 (하지만 추가 턴은 안 줌)
                             if new_pos in self.board.special_steps:
                                 self.branch_selection = True
                                 self.branch_options = self.board.special_steps[new_pos]
                                 self.branch_pawn_index = idx
-                                print(f"분기 선택 활성화: 말[{idx}]가 {new_pos}에서 {self.branch_options} 중 선택해야 합니다.")
                             else:
+                                # 🔥 추가 턴이 없으면 턴을 바꿈
+                                if not self.game_state.extra_turn:
+                                    self.game_state.toggle_turn()
                                 self.game_state.selecting_pawn = False
                             break
+
+
 
 
     def update(self):
