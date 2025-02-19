@@ -70,17 +70,17 @@ class AI:
     def take_turn(self):
         # 1. 윷 던지기
         self.yut.show_result()
-        pygame.time.delay(500)
+        pygame.time.delay(200)
 
-        # 2. 말 선택 로직 (가장 단순한 버전)
+        # 2. 말 선택 로직
         movable_pawns = [i for i, pos in enumerate(self.pawn.c_positions) if pos != -2]
         if not movable_pawns:
             return
 
-        # 예시: 상대 말을 잡을 수 있는 말 선택 → 없으면 랜덤
+        # 상대 말을 잡을 수 있는 말 선택 -> 없으면 랜덤
         best_pawn = self.select_best_pawn(movable_pawns)
         self.pawn.move_pawn(best_pawn, self.yut.result_text, is_player=False)
-        pygame.time.delay(500)
+        pygame.time.delay(200)
 
         # 3. 턴 넘기기
         if not self.game_state.extra_turn:
