@@ -23,7 +23,7 @@ GRAY    = (50, 50, 50)
 # 이미지 로딩 헬퍼 함수
 # -------------------------------
 def load_image(filename, colorkey=None):
-    full_path = os.path.join('img', filename)
+    full_path = os.path.join('./miniproject_yutnori/img', filename)
     try:
         image = pygame.image.load(full_path)
     except pygame.error as message:
