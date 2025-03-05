@@ -1,5 +1,5 @@
 # 2. 실시간 통신 1:1 오목게임
-### ver 1.0 (250304) [CLICK]()
+### ver 1.0 (250304) [CLICK](https://github.com/Owl-jun/mini_projects/tree/main/game_omok)
 
 https://github.com/user-attachments/assets/1f049782-0463-4c84-a53a-4245a55445a8
 
