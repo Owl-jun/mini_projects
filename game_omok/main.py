@@ -3,7 +3,7 @@ import pygame
 import socketio
 
 # SocketIO 클라이언트 초기화
-sio = socketio.Client()
+sio = socketio.Client() 
 
 # 전역 변수: 오목판 상태, 현재 턴, 할당받은 플레이어 번호
 board = []
