@@ -1,3 +1,16 @@
+# 3. 경량 게임엔진 구현 및 멀티플레이 지원 게임 만들기
+### 팀 미니프로젝트 [CLICK](https://github.com/Owl-jun/project_pkmbattle)
+
+
+https://github.com/user-attachments/assets/e7ec0b88-4418-4088-8246-3d4978e5f678
+
+https://github.com/user-attachments/assets/fd431f6d-a3cb-45c0-9d64-9fc00e200ca2
+
+https://github.com/user-attachments/assets/7a117884-c184-4da2-85e8-bee46878a0ae
+
+
+
+
 # 2. 실시간 통신 1:1 오목게임
 ### ver 1.0 (250304) [CLICK](https://github.com/Owl-jun/mini_projects/tree/main/game_omok)
 
