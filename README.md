@@ -1,5 +1,5 @@
 # 3. 경량 게임엔진 구현 및 멀티플레이 지원 게임 만들기
-### 팀 미니프로젝트 [CLICK](https://github.com/Owl-jun/project_pkmbattle)
+### ver 1.0 (250408) 팀 미니프로젝트 [CLICK](https://github.com/Owl-jun/project_pkmbattle)
 
 
 https://github.com/user-attachments/assets/e7ec0b88-4418-4088-8246-3d4978e5f678
