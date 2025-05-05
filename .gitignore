@@ -1,3 +1,59 @@
+# Build files
+build/
+bin/
+obj/
+out/
+*.exe
+*.dll
+*.lib
+*.so
+*.dylib
+*.pdb
+*.o
+*.a
+
+# VSCode local settings
+.vscode/
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Logs and temp files
+*.log
+*.tmp
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Visual Studio stuff (optional, 만약 VSCode + MSVC 같이 쓸 경우)
+*.vcxproj
+*.vcxproj.user
+*.sln
+*.sdf
+*.opensdf
+
+# Backup files
+*~
+*.bak
+*.swp
+
+# Python (만약 스크립트 보조로 쓰면)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 기타 숨김 파일
+*.orig
+*.rej
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
