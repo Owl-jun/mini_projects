@@ -225,3 +225,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+asyncProject/.vs/asyncProject/v17/ipch/AutoPCH/e3905c51f9916b3f/SERVER.ipch
