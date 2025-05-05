@@ -1,282 +1,87 @@
-# Build files
-build/
-bin/
-obj/
-out/
-*.dll
-*.lib
-*.so
-*.dylib
-*.pdb
-*.o
-*.a
-
-# VSCode local settings
-.vscode/
-
-# Mac OS
+##########################################
+# OS / General
+##########################################
 .DS_Store
-
-# Windows
 Thumbs.db
 desktop.ini
 
-# Logs and temp files
-*.log
-*.tmp
+##########################################
+# Visual Studio / MSVC
+##########################################
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
 
+##########################################
+# Build output (Debug / Release / Bin / Obj 등)
+##########################################
+[Bb]in/
+[Oo]bj/
+build/
+x64/
+x86/
+Debug/
+Release/
+*.log
+*.tlog/
+*.ilk
+*.pdb
+*.idb
+*.ipch
+*.iobj
+*.iopt
+*.rsp
+
+##########################################
 # CMake
+##########################################
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
 
-# Visual Studio stuff (optional, 만약 VSCode + MSVC 같이 쓸 경우)
-*.vcxproj
-*.vcxproj.user
-*.sln
-*.sdf
-*.opensdf
-
-# Backup files
-*~
-*.bak
-*.swp
-
-# Python (만약 스크립트 보조로 쓰면)
+##########################################
+# Python (보조 스크립트용 - 필요시)
+##########################################
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# 기타 숨김 파일
+##########################################
+# 기타 임시 / 백업 파일
+##########################################
+*.tmp
+*.bak
+*.swp
+*.~*
 *.orig
 *.rej
 
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+##########################################
+# VSCode project settings
+##########################################
+.vscode/
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
+##########################################
+# 기타 프로젝트 캐시/임시파일
+##########################################
 *.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+*.sqlite
+*.db
 
-# Flask stuff:
-instance/
-.webassets-cache
+##########################################
+# 실행파일 무시 (단, 빌드 폴더 내에서만 무시됨 → Debug/Release 폴더 무시하므로 OK)
+##########################################
+*.exe
+*.dll
+*.lib
+*.so
+*.dylib
+*.a
 
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# UV
-#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#uv.lock
-
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#poetry.lock
-
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#pdm.lock
-#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
-#   in version control.
-#   https://pdm.fming.dev/latest/usage/project/#working-with-version-control
-.pdm.toml
-.pdm-python
-.pdm-build/
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
-
-# PyPI configuration file
-.pypirc
-asyncProject/.vs/asyncProject/v17/ipch/AutoPCH/e3905c51f9916b3f/SERVER.ipch
-.vs/project-pygame-yutnori/CopilotIndices/17.13.444.19527/CodeChunks.db
-.vs/project-pygame-yutnori/CopilotIndices/17.13.444.19527/SemanticSymbols.db
-.vs/project-pygame-yutnori/FileContentIndex/c213accf-a756-4b14-8af1-09f0076084bb.vsidx
-.vs/project-pygame-yutnori/v17/.wsuo
-.vs/project-pygame-yutnori/v17/DocumentLayout.json
-.vs/ProjectSettings.json
-.vs/slnx.sqlite
-.vs/VSWorkspaceState.json
-asyncProject/.vs/asyncProject/CopilotIndices/17.13.444.19527/CodeChunks.db
-asyncProject/.vs/asyncProject/CopilotIndices/17.13.444.19527/CodeChunks.db-shm
-asyncProject/.vs/asyncProject/CopilotIndices/17.13.444.19527/CodeChunks.db-wal
-asyncProject/.vs/asyncProject/CopilotIndices/17.13.444.19527/SemanticSymbols.db
-asyncProject/.vs/asyncProject/CopilotIndices/17.13.444.19527/SemanticSymbols.db-shm
-asyncProject/.vs/asyncProject/CopilotIndices/17.13.444.19527/SemanticSymbols.db-wal
-asyncProject/.vs/asyncProject/FileContentIndex/07be8153-2f31-46a7-90eb-269b8d7a1c28.vsidx
-asyncProject/.vs/asyncProject/FileContentIndex/4b69069d-0ef3-485e-9131-6f4d5e2f2ade.vsidx
-asyncProject/.vs/asyncProject/FileContentIndex/7983bf05-681a-44b1-994a-713d2c978a8e.vsidx
-asyncProject/.vs/asyncProject/FileContentIndex/a6cc248a-9f76-40d1-93c2-af4f2324ed31.vsidx
-asyncProject/.vs/asyncProject/FileContentIndex/cc340dcb-e824-4a79-8e09-e390a9f99975.vsidx
-asyncProject/.vs/asyncProject/v17/.suo
-asyncProject/.vs/asyncProject/v17/Browse.VC.db
-asyncProject/.vs/asyncProject/v17/Browse.VC.db-shm
-asyncProject/.vs/asyncProject/v17/Browse.VC.db-wal
-asyncProject/.vs/asyncProject/v17/Browse.VC.opendb
-asyncProject/.vs/asyncProject/v17/DocumentLayout.backup.json
-asyncProject/.vs/asyncProject/v17/DocumentLayout.json
-asyncProject/.vs/asyncProject/v17/ipch/AutoPCH/5cd00bc944730a4b/CLIENTS.ipch
-asyncProject/.vs/asyncProject/v17/ipch/AutoPCH/98c8b688ec6ce0f1/MAIN.ipch
-asyncProject/clients/x64/Debug/clients.exe.recipe
-asyncProject/clients/x64/Debug/clients.ilk
-asyncProject/clients/x64/Debug/clients.obj
-asyncProject/clients/x64/Debug/clients.tlog/CL.command.1.tlog
-asyncProject/clients/x64/Debug/clients.tlog/Cl.items.tlog
-asyncProject/clients/x64/Debug/clients.tlog/CL.read.1.tlog
-asyncProject/clients/x64/Debug/clients.tlog/CL.write.1.tlog
-asyncProject/clients/x64/Debug/clients.tlog/clients.lastbuildstate
-asyncProject/clients/x64/Debug/clients.tlog/link.command.1.tlog
-asyncProject/clients/x64/Debug/clients.tlog/link.read.1.tlog
-asyncProject/clients/x64/Debug/clients.tlog/link.secondary.1.tlog
-asyncProject/clients/x64/Debug/clients.tlog/link.write.1.tlog
-asyncProject/clients/x64/Debug/vc143.idb
-asyncProject/server/x64/Debug/main.obj
-asyncProject/server/x64/Debug/server.exe.recipe
-asyncProject/server/x64/Debug/server.ilk
-asyncProject/server/x64/Debug/server.tlog/CL.command.1.tlog
-asyncProject/server/x64/Debug/server.tlog/Cl.items.tlog
-asyncProject/server/x64/Debug/server.tlog/CL.read.1.tlog
-asyncProject/server/x64/Debug/server.tlog/CL.write.1.tlog
-asyncProject/server/x64/Debug/server.tlog/link.command.1.tlog
-asyncProject/server/x64/Debug/server.tlog/link.read.1.tlog
-asyncProject/server/x64/Debug/server.tlog/link.secondary.1.tlog
-asyncProject/server/x64/Debug/server.tlog/link.write.1.tlog
-asyncProject/server/x64/Debug/server.tlog/server.lastbuildstate
-asyncProject/server/x64/Debug/server.vcxproj.FileListAbsolute.txt
-asyncProject/server/x64/Debug/vc143.idb
