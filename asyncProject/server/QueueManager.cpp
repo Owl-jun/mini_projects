@@ -39,7 +39,8 @@ void QueueManager::process(Task& task)
     if (ID == "CHAT")
     {
         std::string CHATID, CHATMSG;
-        iss >> CHATID >> CHATMSG;
+        iss >> CHATID;
+        std::getline(iss, CHATMSG);
         std::shared_ptr<std::string> shared_msg = std::make_shared<std::string>(CHATID + " " + CHATMSG + "\n");
         SessionManager::GetInstance().BroadCast(shared_msg);
     }

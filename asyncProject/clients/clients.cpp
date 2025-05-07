@@ -3,6 +3,22 @@
 #include <thread>
 using asio::ip::tcp;
 
+std::string read_msg;
+void do_read(tcp::socket& _socket) {
+    asio::async_read_until(_socket, asio::dynamic_buffer(read_msg), "\n",
+        [&](std::error_code ec, std::size_t length) {
+            if (!ec) {
+                std::string rmsg = read_msg.substr(0, length - 1);
+                read_msg.erase(0, length);
+                std::cout << "수신 : " << rmsg << std::endl;
+                do_read(_socket); // 다시 등록
+            }
+            else {
+                std::cout << "읽기 에러 : " << ec.message() << std::endl;
+            }
+        });
+}
+
 int main()
 {
     asio::io_context io_context;
@@ -34,6 +50,7 @@ int main()
                     std::cout << "[클라] 전송 에러 -> " << ec.message() << std::endl;
                 }
             });
+        do_read(socket);
     }
 
     socket.close();
