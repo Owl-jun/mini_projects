@@ -20,24 +20,24 @@ void Session::start()
 void Session::do_read()
 {
 	auto self(shared_from_this());
-	asio::async_read_until(*socket, asio::dynamic_buffer(read_msg), "\n", [this, self](std::error_code ec, std::size_t length) {
+	asio::async_read_until(*socket, asio::dynamic_buffer(read_msg), "\n", [self](std::error_code ec, std::size_t length) {
 		if (!ec)
 		{
-			std::string msg = read_msg.substr(0, length - 1);
-			read_msg.erase(0, length);
+			std::string msg = self->read_msg.substr(0, length - 1);
+			self->read_msg.erase(0, length);
 
-			if (isValid(msg)) {
+			if (self->isValid(msg)) {
 				QueueManager::GetInstance().push({ self,msg });
-				std::cout << "[Session::do_read] : 클라이언트 -> " << msg << " Task Queue PUSH 완료." << std::endl;
+				//std::cout << "[Session::do_read] : 클라이언트 -> " << msg << " Task Queue PUSH 완료." << std::endl;
 			}
 			else { std::cout << "[Session::do_read] : 클라이언트 -> " << msg << " 잘못된 패킷, 폐기처분 완료." << std::endl; }
 
-			do_read();
+			self->do_read();
 		}
 		else
 		{
 			std::cout << "[Session::do_read] : 에러 발생 -> " << ec.message() << std::endl;
-			Close();
+			self->Close();
 		}
 		});
 }
@@ -46,7 +46,7 @@ void Session::push_WriteQueue(std::shared_ptr<std::string> msg)
 {
 	std::unique_lock<std::mutex> lock(writeMutex);
 	writeQueue.push(msg);
-	std::cout << "[Session::push_WriteQueue] : lock 획득 -> " << *msg << " writeQueue 등록완료." << std::endl;
+	//std::cout << "[Session::push_WriteQueue] : lock 획득 -> " << *msg << " writeQueue 등록완료." << std::endl;
 	lock.unlock();
 
 	if (!sending && !writeQueue.empty())
@@ -71,27 +71,27 @@ void Session::do_write()
 
 	auto self(shared_from_this());
 	asio::async_write(*socket, asio::buffer(*msg),
-		[this, self](std::error_code ec, std::size_t)
+		[self](std::error_code ec, std::size_t)
 		{
-			std::lock_guard<std::mutex> lock(writeMutex);
+			std::lock_guard<std::mutex> lock(self->writeMutex);
 
 			if (!ec)
 			{
-				writeQueue.pop();
+				self->writeQueue.pop();
 
-				if (!writeQueue.empty())
+				if (!self->writeQueue.empty())
 				{
-					do_write();
+					self->do_write();
 				}
 				else 
 				{
-					sending = false;
+					self->sending = false;
 				}
 			}
 			else
 			{
 				std::cout << "[Session::do_write()] 에러 발생 -> " << ec.message() << std::endl;
-				Close();
+				self->Close();
 			}
 		});
 }
