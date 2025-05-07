@@ -11,6 +11,9 @@
     <ClCompile Include="Session.cpp">
       <Filter>Session</Filter>
     </ClCompile>
+    <ClCompile Include="QueueManager.cpp">
+      <Filter>QueueManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="pch">
@@ -22,6 +25,9 @@
     <Filter Include="Session">
       <UniqueIdentifier>{ebfbbb5a-4490-4cfd-954e-b11f851e0aba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="QueueManager">
+      <UniqueIdentifier>{20276b53-8b18-43ff-b552-12e3c3b92321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -30,5 +36,12 @@
     <ClInclude Include="Session.h">
       <Filter>Session</Filter>
     </ClInclude>
+    <ClInclude Include="SessionManager.hpp">
+      <Filter>Session</Filter>
+    </ClInclude>
+    <ClInclude Include="QueueManager.h">
+      <Filter>QueueManager</Filter>
+    </ClInclude>
+    <ClInclude Include="myStruct.hpp" />
   </ItemGroup>
 </Project>
