@@ -7,7 +7,8 @@ https://github.com/user-attachments/assets/1d8c35b1-f0fc-4950-b156-7414fd23f44f
 
 # 3. 경량 게임엔진 구현 및 멀티플레이 지원 게임 만들기
 ### ver 1.0 (250408) 팀 미니프로젝트 [CLICK](https://github.com/Owl-jun/project_pkmbattle)
-- 서버 구현 (NonBoost Asio) , 클라이언트 (SFML 커스터마이징) , 소켓 프로그래밍 , 멀티플레잉
+- 서버 구현 (NonBoost Asio) , 클라이언트 (SFML 커스터마이징) , 소켓 프로그래밍 , 멀티플레이 지원
+- 추후 비동기 스레드풀 기반 서버 리팩토링 , 서버-클라 동기화 리팩토링 예정
 
 
 https://github.com/user-attachments/assets/e7ec0b88-4418-4088-8246-3d4978e5f678
